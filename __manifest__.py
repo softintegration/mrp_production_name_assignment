@@ -2,7 +2,7 @@
 
 {
     'name': 'Manufacturing order name assignment settings',
-    'version': '1.0.1',
+    'version': '1.0.1.1',
     'author': 'Soft-integration',
     'category': 'Manufacturing/Manufacturing',
     'description': "",
@@ -10,7 +10,6 @@
         'mrp','picking_name_assignment'
     ],
     'data': [
-        'views/stock_picking_views.xml'
     ],
     'installable': True,
     'application': False,

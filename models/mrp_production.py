@@ -20,9 +20,19 @@ class MrpProduction(models.Model):
     def action_confirm(self):
         res = super(MrpProduction, self).action_confirm()
         for each in self:
-            if each.picking_type_id.name_assignment_at_validation and not each.name: each._assign_name()
-            each.move_raw_ids.write({'name':each.name})
-            each.move_finished_ids.write({'name':each.name})
+            if each.picking_type_id.name_assignment_at_validation and not each.name:
+                each._assign_name()
+            elif not each.picking_type_id.name_assignment_at_validation and not each.name:
+                # in this case the configuration of assignement was at validation when the user has create the manufacturing order
+                # and has been changed before the confirmation of the manufacturing,this is dead end,to prevent that ,we have to get the default sequence
+                # of the manufacturing operation in this case
+                picking_type_id = self.env['stock.picking.type'].browse(each._get_default_picking_type())
+                if picking_type_id:
+                    each.name = picking_type_id.sequence_id.next_by_id()
+                else:
+                    each.name = self.env['ir.sequence'].next_by_code('mrp.production') or _('New')
+            each.move_raw_ids.write({'name': each.name})
+            each.move_finished_ids.write({'name': each.name})
         return res
 
     def _assign_name(self):
