@@ -6,9 +6,15 @@ from odoo import _, api, fields, models
 class MrpProduction(models.Model):
     _inherit = 'mrp.production'
 
+    def _generate_backorder_productions(self, close_mo=True):
+        """ Inherit this method to inject paramater in the context so that the creation method be aware about the creation of backorder"""
+        return super(MrpProduction,self.with_context(create_backorder=True))._generate_backorder_productions(close_mo=close_mo)
+
     @api.model
     def create(self, vals):
         # we have to do this to force the creation super method to ignore the auto assignment of the name
+        if self.env.context.get('create_backorder',False):
+            return super(MrpProduction, self).create(vals)
         vals.update({'name': '/'})
         mrp_production = super(MrpProduction, self).create(vals)
         if not mrp_production.picking_type_id.name_assignment_at_validation:

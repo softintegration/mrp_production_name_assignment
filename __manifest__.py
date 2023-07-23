@@ -2,7 +2,7 @@
 
 {
     'name': 'Manufacturing order name assignment settings',
-    'version': '1.0.1.1',
+    'version': '1.0.1.2',
     'author': 'Soft-integration',
     'category': 'Manufacturing/Manufacturing',
     'description': "",
